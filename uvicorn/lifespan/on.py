@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import sys
 from asyncio import Queue
 
 from uvicorn import Config
@@ -33,7 +34,9 @@ class LifespanOn:
 
         if self.startup_failed or (self.error_occured and self.config.lifespan == "on"):
             self.logger.error("Application startup failed. Exiting.")
+            self.error_occcurred = True
             self.should_exit = True
+            sys.exit(-1)  # dirty hack to return an exit code if startup handler fails
         else:
             self.logger.info("Application startup complete.")
 
